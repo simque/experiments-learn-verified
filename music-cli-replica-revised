@@ -1,0 +1,66 @@
+# bin/jukebox
+# figured out a way of re-creating Music CLI without using a
+# constant (SONGS) (see previous version).  Solution required wrapping loop
+# within a method (i.e. #run_music_cli) and passing the song hash in as an argument
+# to that method and all other methods (i.e. #execute_action) that would require
+# the songs hash
+
+def prompt(msg)
+  puts "=> #{msg}"
+end
+
+songs = {1=>"Shake It Off, by Taylor Swift", 2=>"In An Aeroplane Over the Sea, by Neutral Milk Hotel", 3=>"Reality Check, by Binary Star", 4=>"Hey boy, hey girl, by the Chemical Brothers"}
+
+def display_help_menu
+  puts " "
+  puts "Main Menu Commands:"
+  puts "  help - Brings up this dialog."
+  puts "  list - Will list all the songs in my collection."
+  puts "  play - Will prompt for a song to play and play that song."
+  puts "  quit - Will exit this program"
+end
+
+def list_songs(songs)
+  puts " "
+  prompt("My songs are:")
+  songs.each do |number, song_and_artist|
+    puts "#{number}. #{song_and_artist}"
+  end
+end
+
+def play_song(songs)
+  puts " "
+  prompt("Please enter the song number you would like to play:")
+  song_number = gets.chomp
+  if songs.keys.include?(song_number.to_i)
+    puts " "
+    puts "#{songs[song_number.to_i]} is currently open in your browser."
+  else
+    prompt("I'm sorry. That is not a valid song number.")
+  end
+end
+
+def execute_action(songs, action)
+  case action
+  when "help"
+    display_help_menu
+  when "list"
+    list_songs(songs)
+  when "play"
+    play_song(songs)
+  end
+end
+
+def run_music_cli(songs)
+  loop do
+    puts " "
+    prompt("What would you like to do?")
+    prompt("I accept: list, play, help, and quit.")
+    action = gets.chomp
+    break if action == "quit"
+    execute_action(songs, action)
+  end
+end
+
+prompt("Hi! Welcome to Command Line Music.")
+run_music_cli(songs)
